@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as github from './github'
 
 type Inputs = {
-  issueNumber: number
+  issueNumber: number | undefined
   addLabels: string[]
   removeLabels: string[]
   token: string
@@ -14,11 +14,8 @@ type Outputs = {
 }
 
 export const run = async (inputs: Inputs, context: github.Context): Promise<Outputs> => {
-  if (!Number.isSafeInteger(inputs.issueNumber)) {
-    throw new Error(`Invalid issue-number: ${inputs.issueNumber}`)
-  }
-
   const octokit = github.getOctokit(inputs.token)
+  const issueNumber = inputs.issueNumber ?? (await inferIssueNumberFromContext(octokit, context))
 
   let addedLabels: string[] = []
   if (inputs.addLabels.length > 0) {
@@ -26,7 +23,7 @@ export const run = async (inputs: Inputs, context: github.Context): Promise<Outp
     const response = await octokit.rest.issues.addLabels({
       owner: context.repo.owner,
       repo: context.repo.repo,
-      issue_number: inputs.issueNumber,
+      issue_number: issueNumber,
       labels: [...inputs.addLabels],
     })
     const allLabels = response.data.map((label) => label.name)
@@ -42,7 +39,7 @@ export const run = async (inputs: Inputs, context: github.Context): Promise<Outp
       octokit.rest.issues.removeLabel({
         owner: context.repo.owner,
         repo: context.repo.repo,
-        issue_number: inputs.issueNumber,
+        issue_number: issueNumber,
         name: label,
       }),
     )
@@ -56,6 +53,26 @@ export const run = async (inputs: Inputs, context: github.Context): Promise<Outp
 }
 
 const intersect = <T>(a: T[], b: T[]): T[] => [...a].filter((x) => b.includes(x))
+
+const inferIssueNumberFromContext = async (octokit: github.Octokit, context: github.Context): Promise<number> => {
+  if (Number.isSafeInteger(context.issue.number)) {
+    core.info(`Current issue or pull request is #${context.issue.number}`)
+    return Number(context.issue.number)
+  }
+  core.info(`Find a pull request associated with the current commit ${context.sha}`)
+  const { data: pulls } = await octokit.rest.repos.listPullRequestsAssociatedWithCommit({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    commit_sha: context.sha,
+    per_page: 1,
+  })
+  const pull = pulls.pop()
+  if (!pull) {
+    throw new Error(`No pull request found for the current commit ${context.sha}`)
+  }
+  core.info(`Found pull request #${pull.number}: ${pull.html_url}`)
+  return pull.number
+}
 
 const catchErrorStatus = async <T>(status: number, promise: Promise<T>): Promise<T | undefined> => {
   try {

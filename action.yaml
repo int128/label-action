@@ -1,10 +1,31 @@
-name: typescript-action
-description: Template of TypeScript Action
+name: label-action
+description: General-purpose action for issue labels
 
 inputs:
-  name:
-    description: example input
+  issue-number:
+    description: The number of issue or pull request. Default to the current issue or pull request.
     required: true
+    default: ${{ github.event.number }}
+  add-labels:
+    description: List of labels to add (multiline)
+    required: false
+  remove-labels:
+    description: List of labels to remove (multiline)
+    required: false
+  token:
+    description: GitHub token
+    required: true
+    default: ${{ github.token }}
+
+outputs:
+  added-labels:
+    description: The labels added (multiline)
+  added-count:
+    description: The number of labels added
+  removed-labels:
+    description: The labels removed (multiline)
+  removed-count:
+    description: The number of labels removed
 
 runs:
   using: 'node20'

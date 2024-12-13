@@ -39,7 +39,12 @@ jobs:
         uses: ./
         with:
           add-labels: |
-            test
+            label-action-test
+      - name: Run int128/label-action
+        uses: ./
+        with:
+          remove-labels: |
+            label-action-test
 
   generate:
     runs-on: ubuntu-latest

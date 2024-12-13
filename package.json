@@ -10,7 +10,7 @@
   "dependencies": {
     "@actions/core": "1.11.1",
     "@actions/github": "6.0.0",
-    "@octokit/plugin-retry": "6.1.0"
+    "@octokit/plugin-retry": "7.1.2"
   },
   "devDependencies": {
     "@tsconfig/recommended": "1.0.8",

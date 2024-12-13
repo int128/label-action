@@ -4,8 +4,7 @@ description: General-purpose action for issue labels
 inputs:
   issue-number:
     description: The number of issue or pull request. Default to the current issue or pull request.
-    required: true
-    default: ${{ github.event.number }}
+    required: false
   add-labels:
     description: List of labels to add (multiline)
     required: false

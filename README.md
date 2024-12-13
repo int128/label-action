@@ -16,12 +16,12 @@ jobs:
 
 ### Inputs
 
-| Name            | Default               | Description                                                                        |
-| --------------- | --------------------- | ---------------------------------------------------------------------------------- |
-| `issue-number`  | `github.event.number` | The number of issue or pull request. Default to the current issue or pull request. |
-| `add-labels`    | -                     | List of labels to add (multiline)                                                  |
-| `remove-labels` | -                     | List of labels to remove (multiline)                                               |
-| `token`         | `github.token`        | GitHub token                                                                       |
+| Name            | Default        | Description                                                                        |
+| --------------- | -------------- | ---------------------------------------------------------------------------------- |
+| `issue-number`  | -              | The number of issue or pull request. Default to the current issue or pull request. |
+| `add-labels`    | -              | List of labels to add (multiline)                                                  |
+| `remove-labels` | -              | List of labels to remove (multiline)                                               |
+| `token`         | `github.token` | GitHub token                                                                       |
 
 ### Outputs
 

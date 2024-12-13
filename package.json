@@ -8,7 +8,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@actions/core": "1.11.1"
+    "@actions/core": "1.11.1",
+    "@actions/github": "6.0.0",
+    "@octokit/plugin-retry": "6.1.0"
   },
   "devDependencies": {
     "@tsconfig/recommended": "1.0.8",

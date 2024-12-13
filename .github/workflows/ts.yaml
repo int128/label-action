@@ -32,10 +32,11 @@ jobs:
       - run: pnpm test
       - run: pnpm build
 
-      - name: e2e-test
+      - name: Run int128/label-action
         uses: ./
         with:
-          name: foo
+          add-labels: |
+            test
 
   generate:
     runs-on: ubuntu-latest

@@ -14,6 +14,10 @@ type Outputs = {
 }
 
 export const run = async (inputs: Inputs, context: github.Context): Promise<Outputs> => {
+  if (!Number.isSafeInteger(inputs.issueNumber)) {
+    throw new Error(`Invalid issue-number: ${inputs.issueNumber}`)
+  }
+
   const octokit = github.getOctokit(inputs.token)
 
   let addedLabels: string[] = []

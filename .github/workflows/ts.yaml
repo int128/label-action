@@ -36,15 +36,32 @@ jobs:
       - run: pnpm build
 
       - name: Run int128/label-action
+        id: add-labels
         uses: ./
         with:
-          add-labels: |
-            label-action-test
+          add-labels: label-action-test
+      - run: test ${{ steps.add-labels.outputs.added-count }} == 1
+
       - name: Run int128/label-action
+        id: re-add-labels
         uses: ./
         with:
-          remove-labels: |
-            label-action-test
+          add-labels: label-action-test
+      - run: test ${{ steps.re-add-labels.outputs.added-count }} == 0
+
+      - name: Run int128/label-action
+        id: remove-labels
+        uses: ./
+        with:
+          remove-labels: label-action-test
+      - run: test ${{ steps.remove-labels.outputs.removed-count }} == 1
+
+      - name: Run int128/label-action
+        id: re-remove-labels
+        uses: ./
+        with:
+          remove-labels: label-action-test
+      - run: test ${{ steps.re-remove-labels.outputs.removed-count }} == 0
 
   generate:
     runs-on: ubuntu-latest

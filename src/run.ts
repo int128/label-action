@@ -10,36 +10,49 @@ type Inputs = {
 
 type Outputs = {
   addedLabels: string[]
+  addedCount: number
   removedLabels: string[]
+  removedCount: number
 }
 
-export const run = async (inputs: Inputs, context: github.Context): Promise<Outputs> => {
+export const run = async (inputs: Inputs, rawContext: github.Context): Promise<Outputs> => {
   const octokit = github.getOctokit(inputs.token)
-  const issueNumber = inputs.issueNumber ?? (await inferIssueNumberFromContext(octokit, context))
-
-  let addedLabels: string[] = []
-  if (inputs.addLabels.length > 0) {
-    core.info(`Adding labels: ${inputs.addLabels.join(', ')}`)
-    const response = await octokit.rest.issues.addLabels({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      issue_number: issueNumber,
-      labels: [...inputs.addLabels],
-    })
-    const allLabels = response.data.map((label) => label.name)
-    addedLabels = intersect(inputs.addLabels, allLabels)
-    core.info(`Added labels: ${addedLabels.join(', ')}`)
+  const context = await inferContext(octokit, rawContext)
+  const addedLabels = await addLabels(octokit, context, inputs.addLabels)
+  const removedLabels = await removeLabels(octokit, context, inputs.removeLabels)
+  return {
+    addedLabels,
+    addedCount: addedLabels.length,
+    removedLabels,
+    removedCount: removedLabels.length,
   }
+}
 
+const addLabels = async (octokit: github.Octokit, context: github.Context, labels: string[]) => {
+  if (labels.length === 0) {
+    return []
+  }
+  core.info(`Adding labels: ${labels.join(', ')}`)
+  const response = await octokit.rest.issues.addLabels({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    issue_number: context.issue.number,
+    labels,
+  })
+  const allLabels = response.data.map((label) => label.name)
+  return intersect(labels, allLabels)
+}
+
+const removeLabels = async (octokit: github.Octokit, context: github.Context, labels: string[]) => {
   const removedLabels = []
-  for (const label of inputs.removeLabels) {
+  for (const label of labels) {
     core.info(`Removing label: ${label}`)
     const response = await catchErrorStatus(
       404,
       octokit.rest.issues.removeLabel({
         owner: context.repo.owner,
         repo: context.repo.repo,
-        issue_number: issueNumber,
+        issue_number: context.issue.number,
         name: label,
       }),
     )
@@ -48,16 +61,15 @@ export const run = async (inputs: Inputs, context: github.Context): Promise<Outp
       removedLabels.push(label)
     }
   }
-
-  return { addedLabels, removedLabels }
+  return removedLabels
 }
 
 const intersect = <T>(a: T[], b: T[]): T[] => [...a].filter((x) => b.includes(x))
 
-const inferIssueNumberFromContext = async (octokit: github.Octokit, context: github.Context): Promise<number> => {
+const inferContext = async (octokit: github.Octokit, context: github.Context): Promise<github.Context> => {
   if (Number.isSafeInteger(context.issue.number)) {
     core.info(`Current issue or pull request is #${context.issue.number}`)
-    return Number(context.issue.number)
+    return context
   }
   core.info(`Find a pull request associated with the current commit ${context.sha}`)
   const { data: pulls } = await octokit.rest.repos.listPullRequestsAssociatedWithCommit({
@@ -71,7 +83,12 @@ const inferIssueNumberFromContext = async (octokit: github.Octokit, context: git
     throw new Error(`No pull request found for the current commit ${context.sha}`)
   }
   core.info(`Found pull request #${pull.number}: ${pull.html_url}`)
-  return pull.number
+  return {
+    ...context,
+    issue: {
+      number: pull.number,
+    },
+  }
 }
 
 const catchErrorStatus = async <T>(status: number, promise: Promise<T>): Promise<T | undefined> => {

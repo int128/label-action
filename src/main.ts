@@ -14,9 +14,9 @@ const main = async (): Promise<void> => {
   )
   core.info(`Outputs: ${JSON.stringify(outputs)}`)
   core.setOutput('added-labels', outputs.addedLabels.join('\n'))
-  core.setOutput('added-count', outputs.addedLabels.length)
+  core.setOutput('added-count', outputs.addedCount)
   core.setOutput('removed-labels', outputs.removedLabels.join('\n'))
-  core.setOutput('removed-count', outputs.removedLabels.length)
+  core.setOutput('removed-count', outputs.removedCount)
 }
 
 main().catch((e: Error) => {

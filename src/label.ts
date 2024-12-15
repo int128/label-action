@@ -6,7 +6,7 @@ export const addLabels = async (octokit: github.Octokit, issue: Issue, labels: s
   if (labels.length === 0) {
     return []
   }
-  const labelsToAdd = labels.filter((label) => !issue.labels.includes(label))
+  const labelsToAdd = getLabelsToAdd(issue.labels, labels)
   if (labelsToAdd.length === 0) {
     core.info(`The issue already has the labels ${labels.join(', ')}`)
     return []
@@ -22,11 +22,14 @@ export const addLabels = async (octokit: github.Octokit, issue: Issue, labels: s
   return labelsToAdd
 }
 
+export const getLabelsToAdd = (currentLabels: string[], requestedLabels: string[]) =>
+  requestedLabels.filter((label) => !currentLabels.includes(label))
+
 export const removeLabels = async (octokit: github.Octokit, issue: Issue, labels: string[]) => {
   if (labels.length === 0) {
     return []
   }
-  const labelsToRemove = labels.filter((label) => issue.labels.includes(label))
+  const labelsToRemove = getLabelsToRemove(issue.labels, labels)
   if (labelsToRemove.length === 0) {
     core.info(`The issue does not have any labels of ${labels.join(', ')}`)
     return []
@@ -51,6 +54,9 @@ export const removeLabels = async (octokit: github.Octokit, issue: Issue, labels
   }
   return removedLabels
 }
+
+export const getLabelsToRemove = (currentLabels: string[], requestedLabels: string[]) =>
+  requestedLabels.filter((label) => currentLabels.includes(label))
 
 const catchStatusError = async <T>(status: number, promise: Promise<T>): Promise<T | undefined> => {
   try {

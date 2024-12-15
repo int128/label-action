@@ -12,7 +12,7 @@ export type Context = {
     repo: string
   }
   issue: {
-    number?: number
+    number: number
   }
 }
 

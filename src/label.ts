@@ -69,3 +69,18 @@ const catchStatusError = async <T>(status: number, promise: Promise<T>): Promise
     }
   }
 }
+
+export const matchLabels = (issue: { labels: string[] }, labels: string[]) => {
+  const matchers = compileMatchers(labels)
+  return issue.labels.filter((issueLabel) => matchers.some((matcher) => matcher(issueLabel)))
+}
+
+const compileMatchers = (patterns: string[]): ((issueLabel: string) => boolean)[] =>
+  patterns.map((pattern) => {
+    if (pattern.startsWith('/') && pattern.endsWith('/')) {
+      const trimSlash = pattern.substring(1, pattern.length - 2)
+      const regexpPattern = new RegExp(trimSlash)
+      return (issueLabel: string) => regexpPattern.test(issueLabel)
+    }
+    return (issueLabel: string) => issueLabel === pattern
+  })

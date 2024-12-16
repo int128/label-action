@@ -11,6 +11,9 @@ inputs:
   remove-labels:
     description: List of labels to remove (multiline)
     required: false
+  match-labels:
+    description: List of patterns to match (multiline)
+    required: false
   token:
     description: GitHub token
     required: true
@@ -25,6 +28,10 @@ outputs:
     description: The labels removed (multiline)
   removed-count:
     description: The number of labels removed
+  matched-labels:
+    description: The labels matched (multiline)
+  matched-count:
+    description: The number of labels matched
 
 runs:
   using: 'node20'

@@ -44,16 +44,36 @@ steps:
 This action returns the removed labels as `removed-labels` output.
 If the current issue does not have a label, the output does not contain it.
 
+### Match labels
+
+To get the labels matched to the patterns,
+
+```yaml
+steps:
+  - uses: int128/label-action@v1
+    id: has-deploy-label
+    with:
+      match-labels: |
+        deploy
+        /^deploy-/
+  - if: steps.has-deploy-label.outputs.matched-count > 0
+    run: echo "The issue has any deploy label"
+```
+
+If a pattern string is in the form of `/PATTERN/`, this action performs the regexp match.
+Otherwise, this action performs the exact match.
+
 ## Specification
 
 ### Inputs
 
-| Name            | Default           | Description                          |
-| --------------- | ----------------- | ------------------------------------ |
-| `issue-number`  | The current issue | The number of issue or pull request  |
-| `add-labels`    | -                 | List of labels to add (multiline)    |
-| `remove-labels` | -                 | List of labels to remove (multiline) |
-| `token`         | `github.token`    | GitHub token                         |
+| Name            | Default           | Description                           |
+| --------------- | ----------------- | ------------------------------------- |
+| `issue-number`  | The current issue | The number of issue or pull request   |
+| `add-labels`    | -                 | List of labels to add (multiline)     |
+| `remove-labels` | -                 | List of labels to remove (multiline)  |
+| `match-labels`  | -                 | List of patterns to match (multiline) |
+| `token`         | `github.token`    | GitHub token                          |
 
 This action determines the current issue as follows:
 
@@ -70,3 +90,5 @@ This action determines the current issue as follows:
 | `added-count`    | The number of labels added     |
 | `removed-labels` | The labels removed (multiline) |
 | `removed-count`  | The number of labels removed   |
+| `matched-labels` | The labels matched (multiline) |
+| `matched-count`  | The number of labels matched   |

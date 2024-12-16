@@ -8,6 +8,7 @@ const main = async (): Promise<void> => {
       issueNumber: Number.parseInt(core.getInput('issue-number')) || undefined,
       addLabels: core.getMultilineInput('add-labels'),
       removeLabels: core.getMultilineInput('remove-labels'),
+      matchLabels: core.getMultilineInput('match-labels'),
       token: core.getInput('token', { required: true }),
     },
     github.getContext(),
@@ -17,6 +18,8 @@ const main = async (): Promise<void> => {
   core.setOutput('added-count', outputs.addedCount)
   core.setOutput('removed-labels', outputs.removedLabels.join('\n'))
   core.setOutput('removed-count', outputs.removedCount)
+  core.setOutput('matched-labels', outputs.matchedLabels.join('\n'))
+  core.setOutput('matched-count', outputs.matchedCount)
 }
 
 main().catch((e: Error) => {

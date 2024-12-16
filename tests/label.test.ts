@@ -1,4 +1,4 @@
-import { getLabelsToAdd, getLabelsToRemove } from '../src/label'
+import { getLabelsToAdd, getLabelsToRemove, matchLabels } from '../src/label'
 
 describe('getLabelsToAdd', () => {
   it.each([
@@ -27,5 +27,20 @@ describe('getLabelsToRemove', () => {
     { currentLabels: ['foo', 'bar'], requestedLabels: ['bar', 'foo'], labelsToRemove: ['bar', 'foo'] },
   ])('returns the labels to remove', ({ currentLabels, requestedLabels, labelsToRemove }) => {
     expect(getLabelsToRemove(currentLabels, requestedLabels)).toStrictEqual(labelsToRemove)
+  })
+})
+
+describe('matchLabels', () => {
+  it.each([
+    { currentLabels: [], patterns: [], matched: [] },
+    { currentLabels: [], patterns: ['foo'], matched: [] },
+    { currentLabels: ['foo'], patterns: [], matched: [] },
+    { currentLabels: ['foo'], patterns: ['foo'], matched: ['foo'] },
+    { currentLabels: ['foo'], patterns: ['/oo$/'], matched: ['foo'] },
+    { currentLabels: ['foo', 'boo'], patterns: ['/oo$/'], matched: ['foo', 'boo'] },
+    { currentLabels: ['foo', 'bar'], patterns: ['/oo$/'], matched: ['foo'] },
+    { currentLabels: ['foo', 'bar'], patterns: ['bar', '/oo$/'], matched: ['foo', 'bar'] },
+  ])('returns the matched labels', ({ currentLabels, patterns, matched }) => {
+    expect(matchLabels({ labels: currentLabels }, patterns)).toStrictEqual(matched)
   })
 })

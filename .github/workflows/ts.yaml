@@ -35,6 +35,11 @@ jobs:
       - run: pnpm test
       - run: pnpm build
 
+      - name: Remove the label before testing
+        uses: ./
+        with:
+          remove-labels: label-action-test
+
       - name: Run int128/label-action
         id: add-labels
         uses: ./
@@ -48,6 +53,13 @@ jobs:
         with:
           add-labels: label-action-test
       - run: test ${{ steps.re-add-labels.outputs.added-count }} == 0
+
+      - name: Run int128/label-action
+        id: match-labels
+        uses: ./
+        with:
+          match-labels: /-action-test$/
+      - run: test ${{ steps.match-labels.outputs.matched-count }} == 1
 
       - name: Run int128/label-action
         id: remove-labels

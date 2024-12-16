@@ -23,6 +23,17 @@ type Outputs = {
 export const run = async (inputs: Inputs, context: github.Context): Promise<Outputs> => {
   const octokit = github.getOctokit(inputs.token)
   const issue = await getCurrentIssue(octokit, context)
+  if (issue === undefined) {
+    return {
+      addedLabels: [],
+      addedCount: 0,
+      removedLabels: [],
+      removedCount: 0,
+      matchedLabels: [],
+      matchedCount: 0,
+    }
+  }
+
   core.info(`Current labels: ${issue.labels.join(', ')}`)
   const addedLabels = await addLabels(octokit, issue, inputs.addLabels)
   const removedLabels = await removeLabels(octokit, issue, inputs.removeLabels)

@@ -50,6 +50,13 @@ jobs:
       - run: test ${{ steps.re-add-labels.outputs.added-count }} == 0
 
       - name: Run int128/label-action
+        id: match-labels
+        uses: ./
+        with:
+          match-labels: /-action-test$/
+      - run: test ${{ steps.match-labels.outputs.matched-count }} == 1
+
+      - name: Run int128/label-action
         id: remove-labels
         uses: ./
         with:

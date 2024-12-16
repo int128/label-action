@@ -8,6 +8,7 @@ const main = async (): Promise<void> => {
       issueNumber: Number.parseInt(core.getInput('issue-number')) || undefined,
       addLabels: core.getMultilineInput('add-labels'),
       removeLabels: core.getMultilineInput('remove-labels'),
+      matchLabels: core.getMultilineInput('match-labels'),
       token: core.getInput('token', { required: true }),
     },
     github.getContext(),

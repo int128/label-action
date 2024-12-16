@@ -35,6 +35,11 @@ jobs:
       - run: pnpm test
       - run: pnpm build
 
+      - name: Remove the label before testing
+        uses: ./
+        with:
+          remove-labels: label-action-test
+
       - name: Run int128/label-action
         id: add-labels
         uses: ./

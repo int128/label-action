@@ -44,22 +44,23 @@ steps:
 This action returns the removed labels as `removed-labels` output.
 If the current issue does not have a label, the output does not contain it.
 
-### Pattern match labels
+### Match labels
 
 To get the labels matched to the patterns,
 
 ```yaml
 steps:
   - uses: int128/label-action@v1
-    id: has-deploy-labels
+    id: has-deploy-label
     with:
       match-labels: |
+        deploy
         /^deploy-/
-  - if: steps.has-deploy-labels.outputs.matched-count > 0
+  - if: steps.has-deploy-label.outputs.matched-count > 0
     run: echo "The issue has any deploy label"
 ```
 
-If a pattern string has both leading and trailing slashes, this action performs the regexp match.
+If a pattern string is in the form of `/PATTERN/`, this action performs the regexp match.
 Otherwise, this action performs the exact match.
 
 ## Specification

@@ -77,10 +77,14 @@ Otherwise, this action performs the exact match.
 
 This action determines the current issue as follows:
 
-- On `pull_request` event, this action manipulates the current pull request.
-- On `issue` event, this action manipulates the current issue.
-- On other events, this action finds a pull request associated to the current commit.
-  If no pull request is found, this action fails.
+- For `pull_request`, `pull_request_target` or `pull_request_review` event,
+  this action finds the current pull request from event.
+- For `issue` or `issue_comment` event,
+  this action finds the current issue from event.
+- For `workflow_run` event, this action finds the target pull request from event.
+  If no pull request is found, this action does nothing.
+- For other events, this action finds a pull request associated to the current commit.
+  If no pull request is found, this action does nothing.
 
 ### Outputs
 

@@ -18,19 +18,20 @@ export type Context = {
 
 export const getContext = async (): Promise<Context> => {
   // https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
-  assert(process.env.GITHUB_REPOSITORY, 'GITHUB_REPOSITORY is required')
-  const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
-
-  assert(process.env.GITHUB_EVENT_PATH, 'GITHUB_EVENT_PATH is required')
-  const payload = JSON.parse(await fs.readFile(process.env.GITHUB_EVENT_PATH, 'utf-8')) as WebhookEvent
-
-  assert(process.env.GITHUB_EVENT_NAME, 'GITHUB_EVENT_NAME is required')
-  assert(process.env.GITHUB_SHA, 'GITHUB_SHA is required')
-
   return {
-    repo: { owner, repo },
-    eventName: process.env.GITHUB_EVENT_NAME,
-    payload,
-    sha: process.env.GITHUB_SHA,
+    repo: getRepo(),
+    eventName: getEnv('GITHUB_EVENT_NAME'),
+    sha: getEnv('GITHUB_SHA'),
+    payload: JSON.parse(await fs.readFile(getEnv('GITHUB_EVENT_PATH'), 'utf-8')) as WebhookEvent,
   }
+}
+
+const getRepo = () => {
+  const [owner, repo] = getEnv('GITHUB_REPOSITORY').split('/')
+  return { owner, repo }
+}
+
+const getEnv = (name: string): string => {
+  assert(process.env[name], `${name} is required`)
+  return process.env[name]
 }

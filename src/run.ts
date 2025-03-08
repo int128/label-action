@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as github from './github.js'
+import { Octokit } from '@octokit/action'
 import { getCurrentIssue } from './issue.js'
 import { addLabels, matchLabels, removeLabels } from './label.js'
 
@@ -20,8 +21,7 @@ type Outputs = {
   matchedCount: number
 }
 
-export const run = async (inputs: Inputs, context: github.Context): Promise<Outputs> => {
-  const octokit = github.getOctokit(inputs.token)
+export const run = async (inputs: Inputs, octokit: Octokit, context: github.Context): Promise<Outputs> => {
   const issue = await getCurrentIssue(octokit, context)
   if (issue === undefined) {
     return {

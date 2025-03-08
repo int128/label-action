@@ -11,7 +11,8 @@ const main = async (): Promise<void> => {
       matchLabels: core.getMultilineInput('match-labels'),
       token: core.getInput('token', { required: true }),
     },
-    github.getContext(),
+    github.getOctokit(),
+    await github.getContext(),
   )
   core.info(`Outputs: ${JSON.stringify(outputs)}`)
   core.setOutput('added-labels', outputs.addedLabels.join('\n'))

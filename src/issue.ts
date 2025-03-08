@@ -1,5 +1,7 @@
 import * as core from '@actions/core'
 import * as github from './github.js'
+import { Octokit } from '@octokit/action'
+import { WorkflowRunEvent } from '@octokit/webhooks-types'
 
 export type Issue = {
   repo: {
@@ -10,15 +12,15 @@ export type Issue = {
   labels: string[]
 }
 
-export const getCurrentIssue = async (octokit: github.Octokit, context: github.Context): Promise<Issue | undefined> => {
-  if (Number.isSafeInteger(context.issue.number)) {
-    return await getIssue(octokit, context, context.issue.number)
+export const getCurrentIssue = async (octokit: Octokit, context: github.Context): Promise<Issue | undefined> => {
+  if ('issue' in context.payload) {
+    return await getIssue(octokit, context, context.payload.issue.number)
   }
 
   if (context.eventName === 'workflow_run') {
-    const workflowRunEvent = context.payload.workflow_run as github.WorkflowRunEvent
-    core.info(`Current workflow_run ${workflowRunEvent.html_url}`)
-    const pullNumber = workflowRunEvent.pull_requests.pop()?.number
+    const event = context.payload as WorkflowRunEvent
+    core.info(`Current workflow_run ${event.workflow_run.html_url}`)
+    const pullNumber = event.workflow_run.pull_requests.pop()?.number
     if (!pullNumber) {
       return
     }
@@ -44,7 +46,7 @@ export const getCurrentIssue = async (octokit: github.Octokit, context: github.C
   }
 }
 
-const getIssue = async (octokit: github.Octokit, context: github.Context, issueNumber: number) => {
+const getIssue = async (octokit: Octokit, context: github.Context, issueNumber: number) => {
   core.info(`Fetching the current issue #${issueNumber}`)
   const { data: issue } = await octokit.rest.issues.get({
     owner: context.repo.owner,

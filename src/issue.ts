@@ -1,7 +1,6 @@
 import * as core from '@actions/core'
 import * as github from './github.js'
 import { Octokit } from '@octokit/action'
-import { WorkflowRunEvent } from '@octokit/webhooks-types'
 
 export type Issue = {
   repo: {
@@ -16,14 +15,14 @@ export const getCurrentIssue = async (octokit: Octokit, context: github.Context)
   if ('issue' in context.payload) {
     return await getIssue(octokit, context, context.payload.issue.number)
   }
+
   if ('pull_request' in context.payload) {
     return await getIssue(octokit, context, context.payload.pull_request.number)
   }
 
-  if (context.eventName === 'workflow_run') {
-    const event = context.payload as WorkflowRunEvent
-    core.info(`Current workflow_run ${event.workflow_run.html_url}`)
-    const pullNumber = event.workflow_run.pull_requests.pop()?.number
+  if ('workflow_run' in context.payload && context.payload.workflow_run) {
+    core.info(`Current workflow_run ${context.payload.workflow_run.html_url}`)
+    const pullNumber = context.payload.workflow_run.pull_requests.pop()?.number
     if (!pullNumber) {
       return
     }

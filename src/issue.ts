@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import * as github from './github'
+import * as github from './github.js'
 
 export type Issue = {
   repo: {

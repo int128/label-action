@@ -9,7 +9,6 @@ const main = async (): Promise<void> => {
       addLabels: core.getMultilineInput('add-labels'),
       removeLabels: core.getMultilineInput('remove-labels'),
       matchLabels: core.getMultilineInput('match-labels'),
-      token: core.getInput('token', { required: true }),
     },
     github.getOctokit(),
     await github.getContext(),

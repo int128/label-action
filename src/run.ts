@@ -9,7 +9,6 @@ type Inputs = {
   addLabels: string[]
   removeLabels: string[]
   matchLabels: string[]
-  token: string
 }
 
 type Outputs = {

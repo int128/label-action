@@ -16,6 +16,9 @@ export const getCurrentIssue = async (octokit: Octokit, context: github.Context)
   if ('issue' in context.payload) {
     return await getIssue(octokit, context, context.payload.issue.number)
   }
+  if ('pull_request' in context.payload) {
+    return await getIssue(octokit, context, context.payload.pull_request.number)
+  }
 
   if (context.eventName === 'workflow_run') {
     const event = context.payload as WorkflowRunEvent

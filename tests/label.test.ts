@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { getLabelsToAdd, getLabelsToRemove, matchLabels } from '../src/label.js'
 
 describe('getLabelsToAdd', () => {

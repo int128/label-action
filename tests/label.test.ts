@@ -1,4 +1,4 @@
-import { getLabelsToAdd, getLabelsToRemove, matchLabels } from '../src/label'
+import { getLabelsToAdd, getLabelsToRemove, matchLabels } from '../src/label.js'
 
 describe('getLabelsToAdd', () => {
   it.each([

@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
-import * as github from './github'
-import { getCurrentIssue } from './issue'
-import { addLabels, matchLabels, removeLabels } from './label'
+import * as github from './github.js'
+import { getCurrentIssue } from './issue.js'
+import { addLabels, matchLabels, removeLabels } from './label.js'
 
 type Inputs = {
   issueNumber: number | undefined

@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
-import * as github from './github'
-import { Issue } from './issue'
+import * as github from './github.js'
+import { Issue } from './issue.js'
 
 export const addLabels = async (octokit: github.Octokit, issue: Issue, labels: string[]) => {
   if (labels.length === 0) {

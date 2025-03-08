@@ -1,5 +1,4 @@
 import * as core from '@actions/core'
-import * as github from './github.js'
 import { Issue } from './issue.js'
 import { Octokit } from '@octokit/action'
 

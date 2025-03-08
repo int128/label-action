@@ -1,8 +1,9 @@
 import * as core from '@actions/core'
 import * as github from './github.js'
 import { Issue } from './issue.js'
+import { Octokit } from '@octokit/action'
 
-export const addLabels = async (octokit: github.Octokit, issue: Issue, labels: string[]) => {
+export const addLabels = async (octokit: Octokit, issue: Issue, labels: string[]) => {
   if (labels.length === 0) {
     return []
   }
@@ -25,7 +26,7 @@ export const addLabels = async (octokit: github.Octokit, issue: Issue, labels: s
 export const getLabelsToAdd = (currentLabels: string[], requestedLabels: string[]) =>
   requestedLabels.filter((label) => !currentLabels.includes(label))
 
-export const removeLabels = async (octokit: github.Octokit, issue: Issue, labels: string[]) => {
+export const removeLabels = async (octokit: Octokit, issue: Issue, labels: string[]) => {
   if (labels.length === 0) {
     return []
   }

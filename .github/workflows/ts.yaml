@@ -46,6 +46,7 @@ jobs:
         with:
           add-labels: label-action-test
       - run: test ${{ steps.add-labels.outputs.added-count }} == 1
+      - run: test ${{ steps.add-labels.outputs.added }} == 'true'
 
       - name: Run int128/label-action
         id: re-add-labels
@@ -53,6 +54,7 @@ jobs:
         with:
           add-labels: label-action-test
       - run: test ${{ steps.re-add-labels.outputs.added-count }} == 0
+      - run: test ${{ steps.re-add-labels.outputs.added }} == 'false'
 
       - name: Run int128/label-action
         id: match-labels
@@ -60,6 +62,7 @@ jobs:
         with:
           match-labels: /-action-test$/
       - run: test ${{ steps.match-labels.outputs.matched-count }} == 1
+      - run: test ${{ steps.match-labels.outputs.matched }} == 'true'
 
       - name: Run int128/label-action
         id: remove-labels
@@ -67,6 +70,7 @@ jobs:
         with:
           remove-labels: label-action-test
       - run: test ${{ steps.remove-labels.outputs.removed-count }} == 1
+      - run: test ${{ steps.remove-labels.outputs.removed }} == 'true'
 
       - name: Run int128/label-action
         id: re-remove-labels
@@ -74,6 +78,7 @@ jobs:
         with:
           remove-labels: label-action-test
       - run: test ${{ steps.re-remove-labels.outputs.removed-count }} == 0
+      - run: test ${{ steps.re-remove-labels.outputs.removed }} == 'false'
 
   generate:
     runs-on: ubuntu-latest

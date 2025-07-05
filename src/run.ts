@@ -14,10 +14,13 @@ type Inputs = {
 type Outputs = {
   addedLabels: string[]
   addedCount: number
+  added: boolean
   removedLabels: string[]
   removedCount: number
+  removed: boolean
   matchedLabels: string[]
   matchedCount: number
+  matched: boolean
 }
 
 export const run = async (inputs: Inputs, octokit: Octokit, context: github.Context): Promise<Outputs> => {
@@ -26,10 +29,13 @@ export const run = async (inputs: Inputs, octokit: Octokit, context: github.Cont
     return {
       addedLabels: [],
       addedCount: 0,
+      added: false,
       removedLabels: [],
       removedCount: 0,
+      removed: false,
       matchedLabels: [],
       matchedCount: 0,
+      matched: false,
     }
   }
 
@@ -40,9 +46,12 @@ export const run = async (inputs: Inputs, octokit: Octokit, context: github.Cont
   return {
     addedLabels,
     addedCount: addedLabels.length,
+    added: addedLabels.length > 0,
     removedLabels,
     removedCount: removedLabels.length,
+    removed: removedLabels.length > 0,
     matchedLabels,
     matchedCount: matchedLabels.length,
+    matched: matchedLabels.length > 0,
   }
 }

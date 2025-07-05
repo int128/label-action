@@ -26,7 +26,7 @@ steps:
     id: add-deploy-label
     with:
       add-labels: deploy
-  - if: steps.add-deploy-label.outputs.added == true
+  - if: steps.add-deploy-label.outputs.added == 'true'
     run: echo "The label has been really added"
 ```
 
@@ -39,6 +39,8 @@ steps:
   - uses: int128/label-action@v1
     with:
       remove-labels: needs-review
+  - if: steps.remove-labels.outputs.removed == 'true'
+    run: echo "The label has been really removed"
 ```
 
 This action returns the removed labels as `removed-labels` output.
@@ -56,7 +58,7 @@ steps:
       match-labels: |
         deploy
         /^deploy-/
-  - if: steps.has-deploy-label.outputs.matched == true
+  - if: steps.has-deploy-label.outputs.matched == 'true'
     run: echo "The issue has any deploy label"
 ```
 

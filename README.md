@@ -26,7 +26,7 @@ steps:
     id: add-deploy-label
     with:
       add-labels: deploy
-  - if: steps.add-deploy-label.outputs.added-count > 0
+  - if: steps.add-deploy-label.outputs.added == true
     run: echo "The label has been really added"
 ```
 
@@ -56,7 +56,7 @@ steps:
       match-labels: |
         deploy
         /^deploy-/
-  - if: steps.has-deploy-label.outputs.matched-count > 0
+  - if: steps.has-deploy-label.outputs.matched == true
     run: echo "The issue has any deploy label"
 ```
 
@@ -88,11 +88,14 @@ This action determines the current issue as follows:
 
 ### Outputs
 
-| Name             | Description                    |
-| ---------------- | ------------------------------ |
-| `added-labels`   | The labels added (multiline)   |
-| `added-count`    | The number of labels added     |
-| `removed-labels` | The labels removed (multiline) |
-| `removed-count`  | The number of labels removed   |
-| `matched-labels` | The labels matched (multiline) |
-| `matched-count`  | The number of labels matched   |
+| Name             | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `added-labels`   | The labels added (multiline)                            |
+| `added-count`    | The number of labels added                              |
+| `added`          | If the labels were added, `true`. Otherwise, `false`.   |
+| `removed-labels` | The labels removed (multiline)                          |
+| `removed-count`  | The number of labels removed                            |
+| `removed`        | If the labels were removed, `true`. Otherwise, `false`. |
+| `matched-labels` | The labels matched (multiline)                          |
+| `matched-count`  | The number of labels matched                            |
+| `matched`        | If the labels were matched, `true`. Otherwise, `false`. |

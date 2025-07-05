@@ -24,14 +24,20 @@ outputs:
     description: The labels added (multiline)
   added-count:
     description: The number of labels added
+  added:
+    description: If the labels were added, true. Otherwise, false.
   removed-labels:
     description: The labels removed (multiline)
   removed-count:
     description: The number of labels removed
+  removed:
+    description: If the labels were removed, true. Otherwise, false.
   matched-labels:
     description: The labels matched (multiline)
   matched-count:
     description: The number of labels matched
+  matched:
+    description: If the labels were matched, true. Otherwise, false.
 
 runs:
   using: 'node20'

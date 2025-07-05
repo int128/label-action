@@ -74,9 +74,9 @@ steps:
     with:
       match-labels: /.*/
   - run: |
-      while read -r label <<< "$LABELS"; do
+      while read -r label; do
         echo "Label: $label"
-      done
+      done <<< "$LABELS"
     env:
       LABELS: ${{ steps.match-all-labels.outputs.matched-labels }}
 ```

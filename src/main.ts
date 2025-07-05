@@ -13,7 +13,7 @@ const main = async (): Promise<void> => {
     github.getOctokit(),
     await github.getContext(),
   )
-  core.info(`Outputs: ${JSON.stringify(outputs)}`)
+  core.info(`Outputs: ${JSON.stringify(outputs, null, 2)}`)
   core.setOutput('added-labels', outputs.addedLabels.join('\n'))
   core.setOutput('added-count', outputs.addedCount)
   core.setOutput('added', outputs.added)

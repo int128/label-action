@@ -46,7 +46,7 @@ jobs:
         with:
           add-labels: label-action-test
       - run: test ${{ steps.add-labels.outputs.added-count }} == 1
-      - if: steps.add-labels.outputs.added == true
+      - if: steps.add-labels.outputs.added == 'true'
         run: echo "The label has been really added"
 
       - name: Run int128/label-action

@@ -65,6 +65,22 @@ steps:
 If a pattern string is in the form of `/PATTERN/`, this action performs the regexp match.
 Otherwise, this action performs the exact match.
 
+To get all labels,
+
+```yaml
+steps:
+  - uses: int128/label-action@v1
+    id: match-all-labels
+    with:
+      match-labels: /.*/
+  - run: |
+      while read -r label; do
+        echo "Label: $label"
+      done <<< "$LABELS"
+    env:
+      LABELS: ${{ steps.match-all-labels.outputs.matched-labels }}
+```
+
 ## Specification
 
 ### Inputs

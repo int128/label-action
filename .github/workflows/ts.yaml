@@ -65,6 +65,20 @@ jobs:
       - run: test ${{ steps.match-labels.outputs.matched }} == 'true'
 
       - name: Run int128/label-action
+        id: match-all-labels
+        uses: ./
+        with:
+          match-labels: /.*/
+      - run: |
+          set -eux
+          test -n "$LABELS"
+          while read -r label; do
+            echo "Label: $label"
+          done <<< "$LABELS"
+        env:
+          LABELS: ${{ steps.match-all-labels.outputs.matched-labels }}
+
+      - name: Run int128/label-action
         id: remove-labels
         uses: ./
         with:

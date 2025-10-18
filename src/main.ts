@@ -5,7 +5,7 @@ import { run } from './run.js'
 const main = async (): Promise<void> => {
   const outputs = await run(
     {
-      issueNumber: Number.parseInt(core.getInput('issue-number')) || undefined,
+      issueNumber: Number.parseInt(core.getInput('issue-number'), 10) || undefined,
       addLabels: core.getMultilineInput('add-labels'),
       removeLabels: core.getMultilineInput('remove-labels'),
       matchLabels: core.getMultilineInput('match-labels'),

@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
-import { Issue } from './issue.js'
-import { Octokit } from '@octokit/action'
+import type { Octokit } from '@octokit/action'
+import type { Issue } from './issue.js'
 
 export const addLabels = async (octokit: Octokit, issue: Issue, labels: string[]) => {
   if (labels.length === 0) {

@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
-import * as github from './github.js'
-import { Octokit } from '@octokit/action'
+import type { Octokit } from '@octokit/action'
+import type * as github from './github.js'
 import { getCurrentIssue } from './issue.js'
 import { addLabels, matchLabels, removeLabels } from './label.js'
 

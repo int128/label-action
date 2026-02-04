@@ -21,13 +21,17 @@ export const addLabels = async (octokit: Octokit, issue: Issue, labels: string[]
   return labelsToAdd
 }
 
-export const getLabelsToAdd = (currentLabels: string[], requestedLabels: string[]) => {
-  const truncatedLabels = requestedLabels
+const normalizeLabels = (labels: string[]): string[] => {
+  const truncatedLabels = labels
     // Truncate labels longer than 50 characters due to the GitHub limitation:
     // https://github.com/github/docs/issues/32156
     .map((label) => label.substring(0, 50))
   // Deduplicate labels that have the same first 50 characters
-  const uniqueLabels = Array.from(new Set(truncatedLabels))
+  return Array.from(new Set(truncatedLabels))
+}
+
+export const getLabelsToAdd = (currentLabels: string[], requestedLabels: string[]) => {
+  const uniqueLabels = normalizeLabels(requestedLabels)
   return uniqueLabels.filter((label) => !currentLabels.includes(label))
 }
 
@@ -61,12 +65,7 @@ export const removeLabels = async (octokit: Octokit, issue: Issue, labels: strin
 }
 
 export const getLabelsToRemove = (currentLabels: string[], requestedLabels: string[]) => {
-  const truncatedLabels = requestedLabels
-    // Truncate labels longer than 50 characters due to the GitHub limitation:
-    // https://github.com/github/docs/issues/32156
-    .map((label) => label.substring(0, 50))
-  // Deduplicate labels that have the same first 50 characters
-  const uniqueLabels = Array.from(new Set(truncatedLabels))
+  const uniqueLabels = normalizeLabels(requestedLabels)
   return uniqueLabels.filter((label) => currentLabels.includes(label))
 }
 

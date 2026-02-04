@@ -14,6 +14,47 @@ describe('getLabelsToAdd', () => {
   ])('returns the labels to add', ({ currentLabels, requestedLabels, labelsToAdd }) => {
     expect(getLabelsToAdd(currentLabels, requestedLabels)).toStrictEqual(labelsToAdd)
   })
+
+  it.each([
+    {
+      requestedLabels: ['short-label', '01234567890123456789012345678901234567890123456789012345'],
+      expectedLabels: ['short-label', '01234567890123456789012345678901234567890123456789'],
+    },
+    {
+      requestedLabels: ['0123456789012345678901234567890123456789012345678'], // 49 characters
+      expectedLabels: ['0123456789012345678901234567890123456789012345678'],
+    },
+    {
+      requestedLabels: ['01234567890123456789012345678901234567890123456789'], // 50 characters
+      expectedLabels: ['01234567890123456789012345678901234567890123456789'],
+    },
+    {
+      requestedLabels: ['012345678901234567890123456789012345678901234567890'], // 51 characters
+      expectedLabels: ['01234567890123456789012345678901234567890123456789'],
+    },
+  ])('truncates labels longer than 50 characters', ({ requestedLabels, expectedLabels }) => {
+    expect(getLabelsToAdd([], requestedLabels)).toStrictEqual(expectedLabels)
+  })
+
+  it.each([
+    {
+      requestedLabels: [
+        'label-012345678901234567890123456789012345678901234A',
+        'label-012345678901234567890123456789012345678901234B',
+      ],
+      expectedLabels: ['label-01234567890123456789012345678901234567890123'],
+    },
+    {
+      requestedLabels: [
+        '01234567890123456789012345678901234567890123456789X',
+        '01234567890123456789012345678901234567890123456789Y',
+        '01234567890123456789012345678901234567890123456789Z',
+      ],
+      expectedLabels: ['01234567890123456789012345678901234567890123456789'],
+    },
+  ])('deduplicates labels with the same first 50 characters', ({ requestedLabels, expectedLabels }) => {
+    expect(getLabelsToAdd([], requestedLabels)).toStrictEqual(expectedLabels)
+  })
 })
 
 describe('getLabelsToRemove', () => {
@@ -28,6 +69,49 @@ describe('getLabelsToRemove', () => {
     { currentLabels: ['foo', 'bar'], requestedLabels: ['bar', 'foo'], labelsToRemove: ['bar', 'foo'] },
   ])('returns the labels to remove', ({ currentLabels, requestedLabels, labelsToRemove }) => {
     expect(getLabelsToRemove(currentLabels, requestedLabels)).toStrictEqual(labelsToRemove)
+  })
+
+  it.each([
+    {
+      requestedLabels: ['short-label', '01234567890123456789012345678901234567890123456789012345'],
+      currentLabels: ['short-label', '01234567890123456789012345678901234567890123456789'],
+    },
+    {
+      requestedLabels: ['0123456789012345678901234567890123456789012345678'], // 49 characters
+      currentLabels: ['0123456789012345678901234567890123456789012345678'],
+    },
+    {
+      requestedLabels: ['01234567890123456789012345678901234567890123456789'], // 50 characters
+      currentLabels: ['01234567890123456789012345678901234567890123456789'],
+    },
+    {
+      requestedLabels: ['012345678901234567890123456789012345678901234567890'], // 51 characters
+      currentLabels: ['01234567890123456789012345678901234567890123456789'],
+    },
+  ])('truncates labels longer than 50 characters', ({ requestedLabels, currentLabels }) => {
+    expect(getLabelsToRemove(currentLabels, requestedLabels)).toStrictEqual(currentLabels)
+  })
+
+  it.each([
+    {
+      requestedLabels: [
+        'label-012345678901234567890123456789012345678901234A',
+        'label-012345678901234567890123456789012345678901234B',
+      ],
+      currentLabels: ['label-01234567890123456789012345678901234567890123'],
+      expectedLabels: ['label-01234567890123456789012345678901234567890123'],
+    },
+    {
+      requestedLabels: [
+        '01234567890123456789012345678901234567890123456789X',
+        '01234567890123456789012345678901234567890123456789Y',
+        '01234567890123456789012345678901234567890123456789Z',
+      ],
+      currentLabels: ['01234567890123456789012345678901234567890123456789'],
+      expectedLabels: ['01234567890123456789012345678901234567890123456789'],
+    },
+  ])('deduplicates labels with the same first 50 characters', ({ requestedLabels, currentLabels, expectedLabels }) => {
+    expect(getLabelsToRemove(currentLabels, requestedLabels)).toStrictEqual(expectedLabels)
   })
 })
 

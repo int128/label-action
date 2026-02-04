@@ -15,6 +15,9 @@ steps:
       add-labels: needs-review
 ```
 
+If a label name is longer than 50 characters,
+it is truncated to 50 characters to avoid [the GitHub API error](https://github.com/github/docs/issues/32156).
+
 This action returns the added labels as `added-labels` output.
 If the current issue already has a label, the output does not contain it.
 
@@ -42,6 +45,8 @@ steps:
   - if: steps.remove-labels.outputs.removed == 'true'
     run: echo "The label has been really removed"
 ```
+
+If a label name is longer than 50 characters, it is truncated to 50 characters.
 
 This action returns the removed labels as `removed-labels` output.
 If the current issue does not have a label, the output does not contain it.

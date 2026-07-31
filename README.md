@@ -51,6 +51,18 @@ If a label name is longer than 50 characters, it is truncated to 50 characters.
 This action returns the removed labels as `removed-labels` output.
 If the current issue does not have a label, the output does not contain it.
 
+### Ensure the desired labels
+
+To add or remove labels to ensure the desired labels,
+
+```yaml
+steps:
+  - uses: int128/label-action@v1
+    with:
+      desired-labels: needs-review
+      desired-state: true # e.g. ${{ steps.check.outputs.needs-review }}
+```
+
 ### Match labels
 
 To get the labels matched to the patterns,
@@ -90,13 +102,15 @@ steps:
 
 ### Inputs
 
-| Name            | Default           | Description                           |
-| --------------- | ----------------- | ------------------------------------- |
-| `issue-number`  | The current issue | The number of issue or pull request   |
-| `add-labels`    | -                 | List of labels to add (multiline)     |
-| `remove-labels` | -                 | List of labels to remove (multiline)  |
-| `match-labels`  | -                 | List of patterns to match (multiline) |
-| `token`         | `github.token`    | GitHub token                          |
+| Name             | Default           | Description                                 |
+| ---------------- | ----------------- | ------------------------------------------- |
+| `issue-number`   | The current issue | The number of issue or pull request         |
+| `add-labels`     | -                 | List of labels to add (multiline)           |
+| `remove-labels`  | -                 | List of labels to remove (multiline)        |
+| `desired-labels` | -                 | List of labels to add or remove (multiline) |
+| `desired-state`  | -                 | The desired state of the labels (boolean)   |
+| `match-labels`   | -                 | List of patterns to match (multiline)       |
+| `token`          | `github.token`    | GitHub token                                |
 
 This action determines the current issue as follows:
 

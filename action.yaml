@@ -11,6 +11,12 @@ inputs:
   remove-labels:
     description: List of labels to remove (multiline)
     required: false
+  desired-labels:
+    description: List of labels to add or remove (multiline)
+    required: false
+  desired-state:
+    description: The desired state of the labels (boolean)
+    required: false
   match-labels:
     description: List of patterns to match (multiline)
     required: false

@@ -24,7 +24,6 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      pull-requests: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
@@ -34,6 +33,21 @@ jobs:
       - run: corepack enable
       - run: pnpm i
       - run: pnpm test
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version-file: .node-version
+      - run: npm install -g corepack
+      - run: corepack enable
+      - run: pnpm i
       - run: pnpm build
 
       - name: Remove the label before testing
@@ -94,6 +108,24 @@ jobs:
           remove-labels: label-action-test
       - run: test ${{ steps.re-remove-labels.outputs.removed-count }} == 0
       - run: test ${{ steps.re-remove-labels.outputs.removed }} == 'false'
+
+      - name: Run int128/label-action
+        id: desired-labels-add
+        uses: ./
+        with:
+          desired-labels: label-action-test
+          desired-state: true
+      - run: test ${{ steps.desired-labels-add.outputs.added-count }} == 1
+      - run: test ${{ steps.desired-labels-add.outputs.added }} == 'true'
+
+      - name: Run int128/label-action
+        id: desired-labels-remove
+        uses: ./
+        with:
+          desired-labels: label-action-test
+          desired-state: false
+      - run: test ${{ steps.desired-labels-remove.outputs.removed-count }} == 1
+      - run: test ${{ steps.desired-labels-remove.outputs.removed }} == 'true'
 
   generate:
     runs-on: ubuntu-latest

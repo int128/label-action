@@ -8,6 +8,8 @@ const main = async (): Promise<void> => {
       issueNumber: Number.parseInt(core.getInput('issue-number'), 10) || undefined,
       addLabels: core.getMultilineInput('add-labels'),
       removeLabels: core.getMultilineInput('remove-labels'),
+      desiredLabels: core.getMultilineInput('desired-labels'),
+      desiredState: core.getInput('desired-state') ? core.getBooleanInput('desired-state') : undefined,
       matchLabels: core.getMultilineInput('match-labels'),
     },
     github.getOctokit(),

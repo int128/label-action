@@ -56,6 +56,21 @@ export const removeLabels = async (octokit: Octokit, issue: Issue, labels: strin
 export const getLabelsToRemove = (currentLabels: string[], requestedLabels: string[]) =>
   truncateLabels(requestedLabels).filter((label) => currentLabels.includes(label))
 
+export const ensureDesiredLabels = async (
+  octokit: Octokit,
+  issue: Issue,
+  labels: string[],
+  state: boolean | undefined,
+) => {
+  if (labels.length === 0) {
+    return { addedLabels: [], removedLabels: [] }
+  }
+  if (state) {
+    return { addedLabels: await addLabels(octokit, issue, labels), removedLabels: [] }
+  }
+  return { addedLabels: [], removedLabels: await removeLabels(octokit, issue, labels) }
+}
+
 const truncateLabels = (labels: string[]) => [
   // Deduplicate labels that have the same first 50 characters
   ...new Set(

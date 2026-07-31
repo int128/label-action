@@ -2,12 +2,14 @@ import * as core from '@actions/core'
 import type { Octokit } from '@octokit/action'
 import type * as github from './github.js'
 import { getCurrentIssue } from './issue.js'
-import { addLabels, matchLabels, removeLabels } from './label.js'
+import { addLabels, ensureDesiredLabels, matchLabels, removeLabels } from './label.js'
 
 type Inputs = {
   issueNumber: number | undefined
   addLabels: string[]
   removeLabels: string[]
+  desiredLabels: string[]
+  desiredState: boolean | undefined
   matchLabels: string[]
 }
 
@@ -42,6 +44,11 @@ export const run = async (inputs: Inputs, octokit: Octokit, context: github.Cont
   core.info(`Current labels: ${issue.labels.join(', ')}`)
   const addedLabels = await addLabels(octokit, issue, inputs.addLabels)
   const removedLabels = await removeLabels(octokit, issue, inputs.removeLabels)
+
+  const ensuredLabels = await ensureDesiredLabels(octokit, issue, inputs.desiredLabels, inputs.desiredState)
+  addedLabels.push(...ensuredLabels.addedLabels)
+  removedLabels.push(...ensuredLabels.removedLabels)
+
   const matchedLabels = matchLabels(issue, inputs.matchLabels)
   return {
     addedLabels,
